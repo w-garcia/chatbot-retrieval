@@ -4,12 +4,12 @@ import itertools
 import sys
 import numpy as np
 import tensorflow as tf
-import chatbot_retrieval.udc_model as udc_model
-import chatbot_retrieval.udc_hparams as udc_hparams
-import chatbot_retrieval.udc_inputs as udc_inputs
-import chatbot_retrieval.udc_metrics
-from chatbot_retrieval.models.dual_encoder import dual_encoder_model
-from chatbot_retrieval.models.helpers import load_vocab
+import udc_model as udc_model
+import udc_hparams as udc_hparams
+import udc_inputs as udc_inputs
+import udc_metrics
+from models.dual_encoder import dual_encoder_model
+from models.helpers import load_vocab
 import csv
 import random
 import nltk
@@ -17,28 +17,15 @@ import operator
 from collections import defaultdict
 from gensim import corpora, models, similarities
 from pathlib import Path
+import udc_flags
 
-
-# Originally from prepare_data.py
-tf.flags.DEFINE_integer("max_sentence_len", 160, "Maximum Sentence Length")
-
-tf.flags.DEFINE_string(
-    "input_dir", os.path.abspath("chatbot_retrieval/data"),
-    "Input directory containing original CSV data files (default = './data')")
-
-tf.flags.DEFINE_string(
-    "output_dir", os.path.abspath("chatbot_retrieval/data"),
-    "Output directory for TFrEcord files (default = './data')")
-
-tf.flags.DEFINE_string("model_dir", "chatbot_retrieval/runs/1477017402/", "Directory to load model checkpoints from")
-tf.flags.DEFINE_string("vocab_processor_file", "chatbot_retrieval/data/vocab_processor.bin", "Saved vocabulary processor file")
 FLAGS = tf.flags.FLAGS
 
 TRAIN_FILE = os.path.abspath(os.path.join(FLAGS.input_dir, "train.csv"))
 DICT_FILE = os.path.abspath(os.path.join(FLAGS.input_dir, "deerwester.dict"))
 CORPUS_FILE = os.path.abspath(os.path.join(FLAGS.input_dir, "deerwester.mm"))
 
-if not FLAGS.model_dir:
+if not FLAGS.trained_model_dir:
     print("You must specify a model directory")
     sys.exit(1)
 
@@ -79,7 +66,7 @@ def populate_cache():
             utterance = row["Utterance"]
             cache.append({"Context": context, "Utterance": utterance})
             count += 1
-            if count == 1000:
+            if count == 10000:
                 return cache
 
     return cache
@@ -141,9 +128,9 @@ def get_responses(n, in_string):
 #if __name__ == "__main__":
 def retrieve_response(input_c):
     #input_c = "hello"
-    potential_responses = get_responses(20, input_c)
+    potential_responses = get_responses(10, input_c)
     model_fn = udc_model.create_model_fn(hparams, model_impl=dual_encoder_model)
-    estimator = tf.contrib.learn.Estimator(model_fn=model_fn, model_dir=FLAGS.model_dir)
+    estimator = tf.contrib.learn.Estimator(model_fn=model_fn, model_dir=FLAGS.trained_model_dir)
 
     # Ugly hack, seems to be a bug in Tensorflow
     # estimator.predict doesn't work without this line

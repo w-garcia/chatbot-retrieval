@@ -2,17 +2,13 @@ import os
 import time
 import itertools
 import tensorflow as tf
-import chatbot_retrieval.udc_model as udc_model
-import chatbot_retrieval.udc_hparams as udc_hparams
-import chatbot_retrieval.udc_metrics as udc_metrics
-import chatbot_retrieval.udc_inputs as udc_inputs
-from chatbot_retrieval.models.dual_encoder import dual_encoder_model
+import udc_model as udc_model
+import udc_hparams as udc_hparams
+import udc_metrics as udc_metrics
+import udc_inputs as udc_inputs
+from models.dual_encoder import dual_encoder_model
+import udc_flags
 
-tf.flags.DEFINE_string("input_dir", "./data", "Directory containing input data files 'train.tfrecords' and 'validation.tfrecords'")
-tf.flags.DEFINE_string("model_dir", None, "Directory to store model checkpoints (defaults to ./runs)")
-tf.flags.DEFINE_integer("loglevel", 20, "Tensorflow log level")
-tf.flags.DEFINE_integer("num_epochs", None, "Number of training Epochs. Defaults to indefinite.")
-tf.flags.DEFINE_integer("eval_every", 2000, "Evaluate after this many train steps")
 FLAGS = tf.flags.FLAGS
 
 TIMESTAMP = int(time.time())
@@ -25,6 +21,7 @@ else:
 TRAIN_FILE = os.path.abspath(os.path.join(FLAGS.input_dir, "train.tfrecords"))
 VALIDATION_FILE = os.path.abspath(os.path.join(FLAGS.input_dir, "validation.tfrecords"))
 
+print("Training file path: {}".format(TRAIN_FILE))
 tf.logging.set_verbosity(FLAGS.loglevel)
 
 def main(unused_argv):

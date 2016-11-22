@@ -5,7 +5,7 @@ import functools
 import tensorflow as tf
 import numpy as np
 import array
-
+import udc_flags
 
 FLAGS = tf.flags.FLAGS
 
@@ -149,8 +149,18 @@ def prepare_data():
   write_vocabulary(
     vocab, os.path.join(FLAGS.output_dir, "vocabulary.txt"))
 
+  print("Writing to {}".format(os.path.join(FLAGS.output_dir, "vocab_processor.bin")))
+  inp = input("Is this correct?")
+
+  if inp == 'n' or inp == 'N':
+      return
+
   # Save vocab processor
   vocab.save(os.path.join(FLAGS.output_dir, "vocab_processor.bin"))
+
+  inp = input("Continue to write tfrecords files?")
+  if inp == 'n' or inp == 'N':
+      return
 
   # Create validation.tfrecords
   create_tfrecords_file(

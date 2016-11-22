@@ -3,16 +3,13 @@ import time
 import itertools
 import sys
 import tensorflow as tf
-import chatbot_retrieval.udc_model as udc_model
-import chatbot_retrieval.udc_hparams as udc_hparams
-import chatbot_retrieval.udc_metrics as udc_metrics
-import chatbot_retrieval.udc_inputs as udc_inputs
-from chatbot_retrieval.models.dual_encoder import dual_encoder_model
+import udc_model as udc_model
+import udc_hparams as udc_hparams
+import udc_metrics as udc_metrics
+import udc_inputs as udc_inputs
+from models.dual_encoder import dual_encoder_model
+import udc_flags
 
-tf.flags.DEFINE_string("test_file", "./data/test.tfrecords", "Path of test data in TFRecords format")
-tf.flags.DEFINE_string("model_dir", None, "Directory to load model checkpoints from")
-tf.flags.DEFINE_integer("loglevel", 20, "Tensorflow log level")
-tf.flags.DEFINE_integer("test_batch_size", 16, "Batch size for testing")
 FLAGS = tf.flags.FLAGS
 
 if not FLAGS.model_dir:

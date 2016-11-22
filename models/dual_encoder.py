@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from chatbot_retrieval.models import helpers
+from models import helpers
 
 FLAGS = tf.flags.FLAGS
 
