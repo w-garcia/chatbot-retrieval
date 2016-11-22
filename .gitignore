@@ -101,3 +101,6 @@ ENV/
 # Temporary data
 .ipynb_checkpoints/
 
+#Pycharm
+.idea/
+
