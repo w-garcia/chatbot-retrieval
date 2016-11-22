@@ -6,18 +6,6 @@ import tensorflow as tf
 import numpy as np
 import array
 
-tf.flags.DEFINE_integer(
-  "min_word_frequency", 5, "Minimum frequency of words in the vocabulary")
-
-tf.flags.DEFINE_integer("max_sentence_len", 160, "Maximum Sentence Length")
-
-tf.flags.DEFINE_string(
-  "input_dir", os.path.abspath("./data"),
-  "Input directory containing original CSV data files (default = './data')")
-
-tf.flags.DEFINE_string(
-  "output_dir", os.path.abspath("./data"),
-  "Output directory for TFrEcord files (default = './data')")
 
 FLAGS = tf.flags.FLAGS
 
@@ -150,7 +138,7 @@ def write_vocabulary(vocab_processor, outfile):
   print("Saved vocabulary to {}".format(outfile))
 
 
-if __name__ == "__main__":
+def prepare_data():
   print("Creating vocabulary...")
   input_iter = create_csv_iter(TRAIN_PATH)
   input_iter = (x[0] + " " + x[1] for x in input_iter)
